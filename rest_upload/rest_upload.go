@@ -107,7 +107,8 @@ func (u *UploaderFile) Upload() (*map[string]interface{}, rest_errors.RestErr) {
 	return &respBody, nil
 }
 
-func UploadFile(p *FileRequest) (*map[string]interface{}, rest_errors.RestErr) {
+func (u *UploaderFile) UploadImg() (*map[string]interface{}, rest_errors.RestErr) {
+	p := u.Params
   file, err := p.File.Open()
   defer file.Close()
   if err != nil {
@@ -125,7 +126,7 @@ func UploadFile(p *FileRequest) (*map[string]interface{}, rest_errors.RestErr) {
   bodyWriter.WriteField("store_code", p.StoreCode)
   bodyWriter.WriteField("type", p.Type)
   bodyWriter.Close()
-	request, err := http.NewRequest("POST", "http://localhost:9010/v1/file", bodyBuf)
+	request, err := http.NewRequest("POST", u.Url, bodyBuf)
 	if err != nil {
 		return nil, rest_errors.NewInternalServerError("error on assign request parameter", err)
 	}
