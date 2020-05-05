@@ -3,15 +3,17 @@ package rest_upload
 import (
 	"io"
 	"os"
+	"fmt"
 	"strings"
 	"encoding/json"
   "mime/multipart"
-	"github.com/sampila/go-utils/rest_errors"
 	"errors"
   "bytes"
   "io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/sampila/go-utils/rest_errors"
 )
 
 /*const (
