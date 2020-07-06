@@ -43,7 +43,7 @@ func NewUploader(url string, p *FileRequest) *UploaderFile{
 	return &UploaderFile{Url : url, Params: p}
 }
 
-func (u *UploaderFile) Upload(token string) (*map[string]interface{}, rest_errors.RestErr) {
+func (u *UploaderFile) Upload() (*map[string]interface{}, rest_errors.RestErr) {
 	params := u.Params
 
 	bodyBuf := new(bytes.Buffer)
@@ -79,7 +79,6 @@ func (u *UploaderFile) Upload(token string) (*map[string]interface{}, rest_error
 	}
 
 	request.Header.Add("Content-Type", bodyWriter.FormDataContentType())
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	client := &http.Client{
 		Timeout: 120 * time.Second,
 	}
@@ -110,7 +109,7 @@ func (u *UploaderFile) Upload(token string) (*map[string]interface{}, rest_error
 	return &respBody, nil
 }
 
-func (u *UploaderFile) UploadImg() (*map[string]interface{}, rest_errors.RestErr) {
+func (u *UploaderFile) UploadImg(token string) (*map[string]interface{}, rest_errors.RestErr) {
 	p := u.Params
   file, err := p.File.Open()
   defer file.Close()
@@ -133,6 +132,8 @@ func (u *UploaderFile) UploadImg() (*map[string]interface{}, rest_errors.RestErr
 	if err != nil {
 		return nil, rest_errors.NewInternalServerError("error on assign request parameter", err)
 	}
+	
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token))
 	request.Header.Add("Content-Type", bodyWriter.FormDataContentType())
 
 	client := &http.Client{
